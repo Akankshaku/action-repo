@@ -1,0 +1,20 @@
+name: Send GitHub events to webhook
+
+on:
+  push:
+  pull_request:
+    types: [opened, closed]
+
+jobs:
+  send-webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send event to webhook
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+               -H "X-GitHub-Event:$GITHUB_EVENT_NAME" \
+               -d @"$GITHUB_EVENT_PATH" \
+               "$WEBHOOK_URL"
+
